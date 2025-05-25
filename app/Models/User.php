@@ -7,6 +7,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserGenderEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -30,6 +31,11 @@ final class User extends Authenticatable
     ];
 
     private string $guard_name = 'api';
+
+    public function exercises(): HasMany
+    {
+        return $this->hasMany(Exercise::class, 'created_by');
+    }
 
     protected function casts(): array
     {
