@@ -16,7 +16,6 @@ final class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
         $this->call([
             RolesAndPermissionSeeder::class,
@@ -25,12 +24,20 @@ final class DatabaseSeeder extends Seeder
             ExerciseSeeder::class,
         ]);
 
-        $user = User::factory()->create([
-            'first_name' => 'Test',
+        $client = User::factory()->create([
+            'first_name' => 'Client',
             'last_name' => 'User',
-            'email' => 'test@example.com',
+            'email' => 'client@example.com',
         ]);
-        $user->assignRole(UserRoleEnum::CLIENT->value);
+        $client->assignRole(UserRoleEnum::CLIENT->value);
 
+        $coach = User::factory()->create([
+            'first_name' => 'Coach',
+            'last_name' => 'Steroid',
+            'email' => 'testosteron@example.com',
+        ]);
+        $coach->assignRole(UserRoleEnum::COACH->value);
+
+        $this->call(TemplateWorkoutSeeder::class);
     }
 }

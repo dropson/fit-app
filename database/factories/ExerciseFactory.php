@@ -26,7 +26,7 @@ final class ExerciseFactory extends Factory
         $equipment = EquipmentGroup::inRandomOrder()->first();
 
         return [
-            'title' => fake()->unique()->sentence(2),
+            'title' => rtrim(fake()->unique()->sentence(2), '.'),
             'instruction' => fake()->paragraph(),
             'equipment_group_id' => $equipment->id,
             'main_muscle_group_id' => $mainMuscle,
