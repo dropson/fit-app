@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\EquipmentEnum;
 use App\Filters\V1\QueryFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Exercise extends Model
 {
@@ -19,13 +21,12 @@ final class Exercise extends Model
         'instruction',
         'visibility',
         'created_by',
-        'main_muscle_group_id',
-        'second_muscle_group_id',
-        'equipment_group_id',
+        'equipment',
     ];
 
     protected $casts = [
         'visibility' => 'boolean',
+        'equipment' => EquipmentEnum::class,
     ];
 
     public function creator(): BelongsTo
@@ -33,19 +34,9 @@ final class Exercise extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function equipment(): BelongsTo
+    public function muscleImpacts(): HasMany
     {
-        return $this->belongsTo(EquipmentGroup::class, 'equipment_group_id');
-    }
-
-    public function mainMuscleGroup(): BelongsTo
-    {
-        return $this->belongsTo(MuscleGroup::class, 'main_muscle_group_id');
-    }
-
-    public function secondMuscleGroup(): BelongsTo
-    {
-        return $this->belongsTo(MuscleGroup::class, 'second_muscle_group_id');
+        return $this->hasMany(ExerciseMuscleImpact::class);
     }
 
     public function scopeForUserOrGlobal(Builder $query, int $userId): Builder

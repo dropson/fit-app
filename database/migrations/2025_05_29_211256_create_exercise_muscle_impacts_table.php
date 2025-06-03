@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Exercise;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +14,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('muscle_groups', function (Blueprint $table): void {
+        Schema::create('exercise_muscle_impacts', function (Blueprint $table): void {
             $table->id();
-            $table->string('title');
-            $table->string('slug');
-            $table->string('icon_url');
+            $table->foreignIdFor(Exercise::class)->constrained()->onDelete('cascade');
+            $table->string('muscle_group');
+            $table->integer('impact_percent');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('muscle_groups');
+        Schema::dropIfExists('exercise_muscle_impacts');
     }
 };
