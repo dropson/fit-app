@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Actions\Exercise\SaveExerciseAction;
 use App\Actions\Exercise\StoreExerciseAction;
+use App\DTOs\ExerciseDTO;
 use App\Filters\V1\ExerciseFilter;
 use App\Http\Controllers\API\ApiController;
+use App\Http\Requests\V1\SaveExerciseRequest;
 use App\Http\Requests\V1\StoreExerciseRequest;
 use App\Http\Requests\V1\UpdateExerciseRequest;
 use App\Http\Resources\V1\ExerciseResource;
@@ -24,7 +27,7 @@ final class ExerciseController extends ApiController
 
         $userId = Auth::id();
 
-        $exercises = Exercise::with(['equipment', 'mainMuscleGroup', 'secondMuscleGroup'])
+        $exercises = Exercise::with(['muscleImpacts'])
             ->forUserOrGlobal($userId)
             ->filter($filters)
             ->get();
@@ -32,9 +35,10 @@ final class ExerciseController extends ApiController
         return ExerciseResource::collection($exercises);
     }
 
-    public function store(StoreExerciseRequest $request, StoreExerciseAction $action): JsonResponse
+    public function store(SaveExerciseRequest $request, SaveExerciseAction $action): JsonResponse
     {
-        $action->handle($request->validated());
+
+        $action->handle(ExerciseDTO::fromRequest($request));
 
         return $this->ok('Exercise created successfully.');
     }
@@ -44,14 +48,12 @@ final class ExerciseController extends ApiController
         return new ExerciseResource($exercise);
     }
 
-    public function update(UpdateExerciseRequest $request, Exercise $exercise): JsonResponse
+    public function update(SaveExerciseRequest $request, Exercise $exercise, SaveExerciseAction $action): JsonResponse
     {
         if ($this->isAble('update', $exercise)) {
-            $exercise->update($request->validated());
-
+            $action->handle(ExerciseDTO::fromRequest($request), $exercise);
             return $this->ok('Exercise successfully updated');
         }
-
         return $this->notAuthorized('You are not authorized to update that resource');
     }
 

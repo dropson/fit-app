@@ -19,8 +19,6 @@ final class DatabaseSeeder extends Seeder
 
         $this->call([
             RolesAndPermissionSeeder::class,
-            MuscleGroupSeeder::class,
-            EquipmentGroupSeeder::class,
             ExerciseSeeder::class,
         ]);
 

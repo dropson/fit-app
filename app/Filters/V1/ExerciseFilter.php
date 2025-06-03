@@ -14,18 +14,31 @@ final class ExerciseFilter extends QueryFilter
 
     public function title(string $value)
     {
-        $likeStr = '%'.$value.'%';
+        $likeStr = '%' . $value . '%';
 
         return $this->builder->where('title', 'like', $likeStr);
     }
 
-    public function equipment($id)
+    public function equipment($value)
     {
-        return $this->builder->where('equipment_group_id', $id);
+        return $this->builder->where('equipment', $value);
     }
 
-    public function muscleGroup($id)
+    public function muscleGroup(string | array $groups)
     {
-        return $this->builder->where('main_muscle_group_id', $id);
+        $groups = (array) $groups;
+
+        return $this->builder->whereHas('muscleImpacts', function ($query) use ($groups) {
+            $query->whereIn('muscle_group', $groups);
+        })
+            ->whereHas('muscleImpacts', function ($query) use ($groups) {
+                $query->whereRaw("
+            impact_percent = (
+                SELECT MAX(impact_percent)
+                FROM exercise_muscle_impacts AS mi
+                WHERE mi.exercise_id = exercise_muscle_impacts.exercise_id
+            )
+        ")->whereIn('muscle_group', $groups);
+            });
     }
 }
