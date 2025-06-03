@@ -38,7 +38,6 @@ final class ExerciseFactory extends Factory
                     'impact_percent' => random_int(30, 100),
                 ]);
             }
-
         });
     }
 }

@@ -6,6 +6,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserGenderEnum;
+use App\Models\Workouts\TemplateWorkout;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -35,6 +36,11 @@ final class User extends Authenticatable
     public function exercises(): HasMany
     {
         return $this->hasMany(Exercise::class, 'created_by');
+    }
+
+    public function templateWorkouts()
+    {
+        return $this->hasMany(TemplateWorkout::class, 'author_id');
     }
 
     protected function casts(): array
