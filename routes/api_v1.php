@@ -13,7 +13,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Client
     Route::prefix('fit')->middleware(['role:client'])->group(function () {
 
-
         // Profile
         Route::get('/user', function (Request $request) {
             return new ClientResource($request->user());

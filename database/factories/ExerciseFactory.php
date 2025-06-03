@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\EquipmentGroup;
-use App\Models\MuscleGroup;
+use App\Enums\EquipmentEnum;
+use App\Enums\MuscleGroupEnum;
+use App\Models\Exercise;
+use App\Models\ExerciseMuscleImpact;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -13,25 +15,30 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 final class ExerciseFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-
-        $mainMuscle = MuscleGroup::inRandomOrder()->first();
-        $secondaryMuscle = MuscleGroup::where('id', '!=', $mainMuscle->id)->inRandomOrder()->first();
-        $equipment = EquipmentGroup::inRandomOrder()->first();
-
         return [
-            'title' => fake()->unique()->sentence(2),
-            'instruction' => fake()->paragraph(),
-            'equipment_group_id' => $equipment->id,
-            'main_muscle_group_id' => $mainMuscle,
-            'second_muscle_group_id' => random_int(0, 1) !== 0 ? $secondaryMuscle->id : null,
+            'title' => fake()->unique()->sentence(3),
+            'instruction' => fake()->sentence(10),
+            'visibility' => true,
+            'equipment' => fake()->randomElement(EquipmentEnum::cases()),
             'created_by' => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Exercise $exercise): void {
+            $muscules = collect(MuscleGroupEnum::cases())->random(random_int(2, 4));
+
+            foreach ($muscules as $muscule) {
+                ExerciseMuscleImpact::create([
+                    'exercise_id' => $exercise->id,
+                    'muscle_group' => $muscule,
+                    'impact_percent' => random_int(30, 100),
+                ]);
+            }
+
+        });
     }
 }

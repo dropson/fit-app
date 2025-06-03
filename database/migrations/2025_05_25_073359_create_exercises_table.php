@@ -17,9 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('instruction')->nullable();
-            $table->foreignId('main_muscle_group_id')->constrained('muscle_groups')->onDelete('cascade');
-            $table->foreignId('second_muscle_group_id')->nullable()->constrained('muscle_groups')->onDelete('cascade');
-            $table->foreignId('equipment_group_id')->constrained('equipment_groups')->onDelete('cascade');
+            $table->string('equipment');
             $table->boolean('visibility')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelet('cascade');
             $table->timestamps();
