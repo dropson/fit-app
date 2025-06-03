@@ -30,6 +30,7 @@ final class TemplateWorkoutSeeder extends Seeder
             'instruction' => 'Coach template workout instructions.',
         ]);
 
+<<<<<<< HEAD
         $this->attachExercisesAndSets($coachWorkout->id, $exercises);
 
         $clientWorkout = TemplateWorkout::create([
@@ -67,4 +68,10 @@ final class TemplateWorkoutSeeder extends Seeder
             }
         }
     }
+=======
+    }
+
+
+
+>>>>>>> c0c02ac (feat: merge template with main)
 }

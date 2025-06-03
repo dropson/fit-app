@@ -24,6 +24,7 @@ final class TemplateWorkout extends Model
     protected $casts = [
         'is_public' => 'boolean',
     ];
+<<<<<<< HEAD
 
     public function templateExercises(): HasMany
     {
@@ -35,4 +36,6 @@ final class TemplateWorkout extends Model
         return $this->belongsToMany(Exercise::class, 'template_exercises')
             ->withPivot('id', 'order');
     }
+=======
+>>>>>>> c0c02ac (feat: merge template with main)
 }
