@@ -34,6 +34,11 @@ final class Exercise extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function muscleImpacts(): HasMany
+    {
+        return $this->hasMany(ExerciseMuscleImpact::class);
+    }
+
     public function scopeForUserOrGlobal(Builder $query, int $userId): Builder
     {
         return $query->where(function ($q) use ($userId): void {

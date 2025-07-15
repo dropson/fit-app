@@ -1,15 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Workouts\TemplateWorkout;
+use App\Models\WorkoutTemplate;
+use Illuminate\Auth\Access\Response;
 
-final class TemplateWorkoutPolicy
+class WorkoutTemplatePolicy
 {
-    public function view(User $user, TemplateWorkout $templateWorkout): bool
+    public function view(User $user, WorkoutTemplate $templateWorkout): bool
     {
         return $templateWorkout->author_id === $user->id;
     }
@@ -23,4 +22,5 @@ final class TemplateWorkoutPolicy
     {
         return false;
     }
+
 }

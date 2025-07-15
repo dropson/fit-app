@@ -6,7 +6,7 @@ namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginUserRequest;
-use App\Http\Resources\V1\ClientResource;
+use App\Http\Resources\V1\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +29,7 @@ final class LoginController extends Controller
             'Authenticated',
             [
                 'token' => $user->createToken('auth-token')->plainTextToken,
-                'user' => new ClientResource($user),
+                'user' => new UserResource($user),
             ]
         );
     }

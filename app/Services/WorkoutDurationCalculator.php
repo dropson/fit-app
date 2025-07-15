@@ -2,31 +2,31 @@
 
 namespace App\Services;
 
+use Illuminate\Database\Eloquent\Model;
+
 class WorkoutDurationCalculator
 {
-
-    public function calculate(mixed $workout): int
+    public function calculate(Model $workout): int
     {
         $totalDuration = 0;
-        $restBetweenSEts = 120;
-        $exericeTransitonTime = 120;
+        $restBetweenSets = 120;
+        $exerciseTransitionTime = 120;
         $setExecutionTime = 30;
 
-        // if (!$workout->relationLoaded('templateExercises')) {
-        //     $workout->load('templateExercises.sets');
-        // } elseif (!$workout->exercises->first()?->relationLoaded('sets')) {
-        //     $workout->load('templateExercises.sets');
-        // }
+        if (!$workout->relationLoaded('items')) {
+            $workout->load('items');
+        }
 
-        foreach ($workout->templateExercises as $index => $exercise) {
-            // dd($exercise);
-            $setsCount = $exercise->sets->count();
+        $grouped = $workout->items->groupBy('exercise_id');
+        $exerciseIndex = 0;
+        foreach ($grouped as $exerciseId => $items) {
+            $setsCount = $items->count();
 
-            $durationForSets = $setsCount * ($setExecutionTime + $restBetweenSEts);
+            $durationForSets = $setsCount * ($setExecutionTime + $restBetweenSets);
             $totalDuration += $durationForSets;
 
-            if ($index !== $workout->exercises->count() - 1) {
-                $totalDuration += $exericeTransitonTime;
+            if (++$exerciseIndex !== $grouped->count()) {
+                $totalDuration += $exerciseTransitionTime;
             }
         }
 

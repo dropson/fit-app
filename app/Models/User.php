@@ -38,11 +38,14 @@ final class User extends Authenticatable
         return $this->hasMany(Exercise::class, 'created_by');
     }
 
-    public function templateWorkouts()
+    public function workoutTemplates()
     {
-        return $this->hasMany(TemplateWorkout::class, 'author_id');
+        return $this->hasMany(WorkoutTemplate::class, 'author_id');
     }
-
+   public function getFullNameAttribute()
+    {
+    	return ucwords("{$this->first_name} {$this->last_name}");
+    }
     protected function casts(): array
     {
         return [

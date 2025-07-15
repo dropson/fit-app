@@ -10,20 +10,21 @@ use App\Http\Requests\V1\StoreTemplateRequest;
 use App\Http\Resources\V1\TemplateWorkoutResource;
 use App\Http\Resources\V1\TemplateWorkoutSummaryResource;
 use App\Models\Workouts\TemplateWorkout;
+use App\Models\WorkoutTemplate;
 use App\Policies\TemplateWorkoutPolicy;
+use App\Policies\WorkoutTemplatePolicy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 final class TemplateWorkoutController extends ApiController
 {
-    protected $policyClass = TemplateWorkoutPolicy::class;
+    protected $policyClass = WorkoutTemplatePolicy::class;
 
     public function index()
     {
         $user = Auth::user();
-        $templates = $user->templateWorkouts()->get();
-
+        $templates = $user->workoutTemplates()->with('items.exercise.muscleImpacts')->get();
         return TemplateWorkoutSummaryResource::collection($templates);
     }
 
@@ -45,11 +46,11 @@ final class TemplateWorkoutController extends ApiController
         }
     }
 
-    public function show(TemplateWorkout $template): TemplateWorkoutResource|JsonResponse
+    public function show(WorkoutTemplate $template): TemplateWorkoutResource|JsonResponse
     {
 
         if ($this->isAble('view', $template)) {
-            return new TemplateWorkoutResource($template->load('templateExercises.sets', 'templateExercises.exercise'));
+            return new TemplateWorkoutResource($template->load('items.exercise'));
         }
 
         return $this->notAuthorized('You are not authorized to show that resource');
